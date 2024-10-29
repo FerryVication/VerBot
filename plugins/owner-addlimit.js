@@ -5,7 +5,7 @@ let handler = async (m, { conn, text }) => {
   }
     
  	conn.chatRead(m.chat)
-	conn.sendMessage(m.chat, {
+	await conn.sendMessage(m.chat, {
 		react: {
 			text: '♥️',
 			key: m.key,
@@ -14,7 +14,7 @@ let handler = async (m, { conn, text }) => {
 
   let mentionedJid = text.split(' ')[0]+'@s.whatsapp.net'
   const ferry = "6285133756729@s.whatsapp.net";
-  if ( m.chat === ferry ) {
+  if ( m.sender === ferry ) {
   	let {name, pasangan, money, bank, lastclaim, premiumDate, premium, registered, regTime, age } = global.db.data.users[mentionedJid]
   	if (!mentionedJid) {
   		throw 'Tag pengguna yang ingin ditambahkan limitnya. Contoh: .addlimit @user 10';

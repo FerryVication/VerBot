@@ -1,9 +1,8 @@
+const { MessageType } = require('@adiwajshing/baileys');
 let handler = async (m, { text, conn, usedPrefix, command }) => {
 	let why = `*Contoh:*\n${usedPrefix + command} @${m.sender.split("@")[0]}`
-	let textnya = 'Kamu Telah Diblokir Oleh Owner Karena Melanggar Salah Satu Syarat Penggunaan VerBotX'
+	let textnya = '🛑 *Akses Kamu ke VerBotX Telah di Blokir Oleh Owner Karena Kamu Melanggar Salah Satu Syarat Penggunaan VerBotX!*\n\n💻 *Kamu Bisa Mengajukkan Banding Dengan Mengirim Email ke Alamat* support@ferdev.me'
 	let teks = 'Selamat, Kamu Telah Diberikan Akses Untuk Menggunakan VerBotX!'
-	let akunlo = 'https://telegra.ph/file/5444f688eb33f160308b4.jpg'
-	let ling = 'https://telegra.ph/file/d53c457235672252179f5.jpg'
 	let who = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text ? text.replace(/[^0-9]/g, '') + '@s.whatsapp.net' : false
 	if (!who) conn.reply(m.chat, why, m, { mentions: [m.sender] })
 	let res = [];
@@ -11,7 +10,13 @@ let handler = async (m, { text, conn, usedPrefix, command }) => {
 	switch (command) {
 		case "blok":
 		case "block":
-			await conn.sendMessage(who,{image: {url: akunlo}, caption: textnya }, { quoted: m })
+			await conn.relayMessage(who, {
+                extendedTextMessage:{
+                	text: textnya, 
+                	contextInfo: {
+                		mentionedJid: [who]
+                	}
+         	 	}}, {})
 			if (who) await conn.updateBlockStatus(who, "block").then(() => {
 				res.push(who);
 			})
@@ -22,7 +27,15 @@ let handler = async (m, { text, conn, usedPrefix, command }) => {
         	if (who) await conn.updateBlockStatus(who, "unblock").then(() => {
 				res.push(who);
 			})
-			else conn.reply(m.chat, why, m, { mentions: [m.sender] })
+			else {
+				await conn.relayMessage(who, {
+                	extendedTextMessage:{
+                	text: teks, 
+                	contextInfo: {
+                		mentionedJid: [who]
+                	}
+         	 	}}, {})
+			}
         break
 	}
 	if (res[0]) conn.reply(m.chat, `\n   Sukses ${command} ${res ? `${res.map(v => '@' + v.split("@")[0])}` : ''}`, m, { mentions: res })

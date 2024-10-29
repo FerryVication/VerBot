@@ -1,53 +1,87 @@
-let handler = async (m, { conn, text }) => {
-	const { MessageType } = require('@adiwajshing/baileys');
-    let who = text.split(' ')[0]
-    if (global.prems.includes(who.split`@`[0])) throw 'dia udah premium!'
-    global.prems.push(`${who.split`@`[0]}`)
-    conn.reply(m.chat, `@${who.split`@`[0]} sekarang premium!`, m, {
+let handler = async (m, { conn, args }) => {
+    const { MessageType } = require('@adiwajshing/baileys');
+    
+    // Memecah args berdasarkan spasi
+    let [nama, timeUnit, amount] = args;
+
+    // Validasi input
+    if (!nama || !timeUnit || !amount) throw 'Format : .addprem 628xxx h|m|j [jumlah]';
+    
+    let planning = parseInt(amount);
+    if (isNaN(planning) || planning <= 0) throw 'Jumlah hari/jam/menit harus angka yang valid!';
+
+    let duration;
+    switch (timeUnit.toLowerCase()) {
+        case 'h': // h untuk hari
+            duration = planning * 86400000; // Konversi hari ke milidetik
+            break;
+        case 'm': // m untuk menit
+            duration = planning * 60000; // Konversi menit ke milidetik
+            break;
+        case 'j': // j untuk jam
+            duration = planning * 3600000; // Konversi jam ke milidetik
+            break;
+        default:
+            throw 'Unit waktu tidak valid! Gunakan h untuk hari, j untuk jam, atau m untuk menit.';
+    }
+
+    if (global.prems.includes(nama.split`@`[0])) throw 'Dia sudah premium!';
+    global.prems.push(`${nama.split`@`[0]}`);
+    conn.reply(m.chat, `@${nama.split`@`[0]} sekarang premium selama ${planning} ${timeUnit === 'h' ? 'hari' : timeUnit === 'j' ? 'jam' : 'menit'}!`, m, {
         contextInfo: {
-            mentionedJid: [who]
+            mentionedJid: [nama]
         }
-    })
-    let usernya = who + '@s.whatsapp.net'
-    let mentionedJid = text.split(' ')[0]+'@s.whatsapp.net'
-    // Data User
-    let nameNya = global.db.data.users[usernya].name
-    // Hari Sekarang 
-    let today = new Date()
-    // Format Tanggal Dalam Bahasa Indonesia 
-    let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    // Tanggal Sekarang Dalam Format Indonesia
-    let _today = today.toLocaleDateString('id-ID', options)
-    // Menambahkan 14 Hari Masa Expired
-    let futureDate = new Date()
-    futureDate.setDate(today.getDate() + 14)
-    // Expired User Premium 
-    let expired = futureDate.toLocaleDateString('id-ID', options)
-    // Teks Bukti Pembayaran Limit Yang Akan di Kirim ke User Premium
+    });
+
+    let usernya = nama + '@s.whatsapp.net';
+    let mentionedJid = nama + '@s.whatsapp.net';
+    let now = new Date() * 1;
+    global.db.data.users[usernya].premium = true;
+    if (now < global.db.data.users[usernya].premiumDate) global.db.data.users[usernya].premiumDate += duration;
+    else global.db.data.users[usernya].premiumDate = now + duration;
+
+    let nameNya = global.db.data.users[usernya].name;
+    let today = new Date();
+    let futureDate = new Date(now + duration);
+
+    // Format Tanggal dan Waktu dalam Bahasa Indonesia
+    let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+
+    let _today = today.toLocaleDateString('id-ID', options);
+    let _timeToday = today.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+    let expired = futureDate.toLocaleDateString('id-ID', options);
+    let _timeExpired = futureDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
     let teksnya = `
     ┌────···[ *ᴠᴇʀʙᴏᴛx ꜱᴛᴏʀᴇ* ]···──────
     │
     │	ʜᴀʟʟᴏ ᴋᴀᴋ, ${nameNya} ☺️
     │
-    ├────···[ *ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ* ]···───────
+    ├────···[ *ɪɴꜰᴏʀᴍᴀꜱɪ* ]···───────
     │
     │  • ᴛᴇʀɪᴍᴀ ᴋᴀꜱɪʜ ᴛᴇʟᴀʜ ᴍᴇʟᴀᴋᴜᴋᴀɴ
-    │ 	ᴘᴇᴍʙᴇʟɪᴀɴ ᴀᴋꜱᴇꜱ ᴘʀᴇᴍɪᴜᴍ
-    │  • ᴘᴀᴅᴀ :
-    │  	${_today}
-    │  • ʙᴇʀᴀᴋʜɪʀ ᴘᴀᴅᴀ  :
-    │ 	${expired}
+    │ 	ᴘᴇᴍʙᴇʟɪᴀɴ ᴘᴀᴋᴇᴛ ᴘʀᴇᴍɪᴜᴍ ${planning} ${timeUnit === 'h' ? 'hari' : timeUnit === 'j' ? 'jam' : 'menit'}
     │
-    ├────·────────────────────`
+    │  • ᴘᴀᴅᴀ :
+    │  	${_today} ${_timeToday}
+    │
+    │  • ʙᴇʀᴀᴋʜɪʀ ᴘᴀᴅᴀ  :
+    │ 	${expired} ${_timeExpired}
+    │
+    ├────·────────────────────`;
+
     await conn.relayMessage(usernya, {
-                extendedTextMessage:{
-                text: teksnya, 
-                contextInfo: {
+        extendedTextMessage: {
+            text: teksnya,
+            contextInfo: {
                 mentionedJid: [mentionedJid]
-                }
-          }}, {})
+            }
+        }
+    }, {})
 }
-handler.help = ['addprem [@user]']
+
+handler.help = ['addprem 628xxx h|m|j [jumlah]']
 handler.tags = ['owner']
 handler.command = /^(add|tambah|\+)prem$/i
 handler.limit = true
@@ -55,4 +89,4 @@ handler.rowner = true
 handler.limit = 10000
 handler.premium = true
 
-module.exports = handler
+module.exports = handler;

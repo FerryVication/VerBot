@@ -4,6 +4,7 @@ const {
   prepareWAMessageMedia
 } = require('@adiwajshing/baileys');
 const moment = require("moment-timezone");
+let fs = require('fs')
 const fetch = require("node-fetch");
 let levelling = require('../lib/levelling')
 let handler = async (m, {
@@ -28,14 +29,23 @@ let handler = async (m, {
   ├────···[ ᴘᴇɴɢɢᴜɴᴀ ]···────✧
   │⬡ *ɴᴀᴍᴀ : ${registered ? name : ''}*
   │⬡ *ᴜᴍᴜʀ : ${age} ᴛᴀʜᴜɴ*
-  │⬡ *ʀᴏʟᴇ* : ${isPrems ? 'ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀ👑' : 'ꜰʀᴇᴇ ᴜꜱᴇʀ😜'}
+  │⬡ *ʟᴇᴠᴇʟ : ${level}*
+  │⬡ *ʀᴏʟᴇ : ${role}*
+  │⬡ *ᴘʟᴀɴ* : ${isPrems ? 'ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀ👑' : 'ꜰʀᴇᴇ ᴜꜱᴇʀ😜'}
   │⬡ *ʟɪᴍɪᴛ* : ${isPrems ? 'ᴜɴʟɪᴍɪᴛᴇᴅ' : limit}
-  ├────···[ *ᴠ.1.5.0* ]···────✧
+  ├────···[ *ᴠ.1.7.0* ]···────✧
   │⬡ *ᴠᴇʀʙᴏᴛx ᴛᴇʟᴀʜ ᴀᴋᴛɪꜰ ꜱᴇʟᴀᴍᴀ* : 
   │⬡ ${ver}
   │⬡ *ᴘʀᴇꜰɪx* : [ ${usedPrefix} ]
   │⬡ *${Object.keys(global.db.data.users).length}* ᴘᴇɴɢɢᴜɴᴀ ᴠᴇʀʙᴏᴛx
   │⬡ *${diBanned.length}* ᴘᴇɴɢɢᴜɴᴀ ᴛᴇʀʙᴀɴɴᴇᴅ
+  ├────···[ *𝚂𝚄𝙱 𝙼𝙴𝙽𝚄* ]···────✧
+  │
+  │⬡ ${usedPrefix}stickermenu
+  │⬡ ${usedPrefix}populerfitur
+  │⬡ ${usedPrefix}rpgmenu
+  │⬡ ${usedPrefix}nsfwmenu
+  │⬡ ${usedPrefix}downloadermenu
   ┬
   ├━━━━━━━━━━━━━━━━┈─⋆
   │ ▸ *ᴀᴜᴛʜᴏʀ :* ꜰᴇʀɪ ᴘʀᴀᴛᴀᴍᴀ
@@ -47,7 +57,7 @@ let handler = async (m, {
   │⬡ ${usedPrefix}feedback
   │
   ╰━━━━━━━━━━━━━━━━┈─◂`
-  
+/*
   let msg = generateWAMessageFromContent(m.chat, {
     viewOnceMessage: {
       message: {
@@ -81,7 +91,11 @@ let handler = async (m, {
                 name: "quick_reply",
                 buttonParamsJson: "{\"display_text\":\"ꜱᴛɪᴄᴋᴇʀ ᴍᴀᴋᴇʀ\",\"id\":\".stickermenu\"}"
               },
-              {
+              /*{
+                name: "quick_reply",
+                buttonParamsJson: "{\"display_text\":\"ʀᴀɴᴅᴏᴍ\",\"id\":\".randommenu\"}"
+              },*/
+              /*{
                 name: "quick_reply",
                 buttonParamsJson: "{\"display_text\":\"ᴘᴏᴘᴜʟᴀʀ\",\"id\":\".populerfitur\"}"
               },
@@ -125,12 +139,27 @@ let handler = async (m, {
 
   await conn.relayMessage(msg.key.remoteJid, msg.message, {
     messageId: msg.key.id
-  });
+  });*/
+  conn.sendMessage(m.chat, {
+  	video: fs.readFileSync('./media/thumb.mp4'),
+  	gifPlayback: true,
+  	caption: caption,
+  	contextInfo: {
+		externalAdReply: {
+			title: `${ucpn} ${registered ? name : ''}`,
+			body: 'Technology and Bot Automation',
+			thumbnailUrl: `https://raw.githubusercontent.com/clicknetcafe/Databasee/main/azamibot/media/picbot/menus/menus_${getRandomThreeDigitNumber()}.jpg`,
+			sourceUrl: 'https://whatsapp.com/channel/0029Vag7tk2L7UVcZjpKa40S',
+			mediaType: 1,
+			renderLargerThumbnail: true
+		}
+	}
+  })
 };
 
 handler.help = ["menu"];
 handler.tags = ["main"];
-handler.command = /^(menu)$/i;
+handler.command = /^menu|info|help|hai$/i
 
 handler.register = true;
 

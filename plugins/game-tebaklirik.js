@@ -14,7 +14,7 @@ let handler = async (m, { conn, usedPrefix }) => {
     let json = src[Math.floor(Math.random() * src.length)]
     // buat caption buat di tampilin di wa
     let caption = `
-${json.result.question}
+${json.question}
 
 ┌─⊷ *INFO*
 ▢ Timeout *${(timeout / 1000).toFixed(2)} detik*

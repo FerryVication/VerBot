@@ -1,70 +1,48 @@
-let PhoneNumber = require('awesome-phonenumber')
-let levelling = require('../lib/levelling')
-const axios = require ("axios")
-const fetch = require("node-fetch")
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-	function no(number){
-    return number.replace(/\s/g,'').replace(/([@+-])/g,'')
-  }
-
-	text = no(text)
-
-  if(isNaN(text)) {
-		var number = text.split`@`[1]
-  } else if(!isNaN(text)) {
-		var number = text
-  }
-  
-   //if(!text && !m.quoted) return conn.reply(m.chat, `*❏ GET NUMBER*\n\n• \`\`\`\Tag user:\`\`\`\ *${usedPrefix}profile @Tag*\n• \`\`\`\Type number:\`\`\`\ *${usedPrefix}profile 6289654360447*\n• \`\`\`\Check my profile:\`\`\`\ *(Balas / Reply Pesan Anda Sendiri)*\n• \`\`\`\Reply user which want in\`\`\`\  _*STALKING*_`, m)
-    //if(isNaN(number)) return conn.reply(m.chat, `*❏ GET NUMBER*\n\n• \`\`\`\Tag user:\`\`\`\ *${usedPrefix}profile @Tag*\n• \`\`\`\Type number:\`\`\`\ *${usedPrefix}profile 6289654360447*\n• \`\`\`\Check my profile:\`\`\`\ *(Balas / Reply Pesan Anda Sendiri)*\n• \`\`\`\Reply user which want in\`\`\`\  _*STALKING*_`, m)
-    //if(number.length > 15) return conn.reply(m.chat, `*❏ GET NUMBER*\n\n• \`\`\`\Tag user:\`\`\`\ *${usedPrefix}profile @Tag*\n• \`\`\`\Type number:\`\`\`\ *${usedPrefix}profile 6289654360447*\n• \`\`\`\Check my profile:\`\`\`\ *(Balas / Reply Pesan Anda Sendiri)*\n• \`\`\`\Reply user which want in\`\`\`\  _*STALKING*_`, m) 
- let pp = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXIdvC1Q4WL7_zA6cJm3yileyBT2OsWhBb9Q&usqp=CAU'
-  try {
-  	//pp = await conn.updateProfilePicture(text)
-			//let pp = './src/avatar_contact.png'
-			var who = m.sender
-			pp = await conn.profilePictureUrl(who, 'image')
-		} catch (e) {
-					//pp = 'https://telegra.ph/file/32ffb10285e5482b19d89.jpg'
-		//} catch (e) {
-  } finally {
-  	if (typeof db.data.users[who] == 'undefined') throw 'Pengguna tidak ada didalam data base'
-	let groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : {}
-    let participants = m.isGroup ? groupMetadata.participants : []
-	let users = m.isGroup ? participants.find(u => u.jid == who) : {}
-	let number = who.split('@')[0]
-	//let pp = await conn.updateProfilePicture(who)
-	let about = (await conn.fetchStatus(who).catch(console.error) || {}).status || ''
-    let { name, pasangan, limit, exp, money, bank, lastclaim, premiumDate, premium, registered, regTime, age, level, role } = global.db.data.users[who]
-    let now = new Date() * 1
-    let { min, xp, max } = levelling.xpRange(level, global.multiplier)
-    let username = conn.getName(who)
-   // let buffer = await getBuffer(pp)
-    let math = max - xp
-    let prem = global.prems.includes(who.split`@`[0])
-    let jodoh = `Berpacaran @${pasangan.split`@`[0]}`
-    let str = `
-> 📝 *Name* : ${username} ${registered ? '(' + name + ') ': ''}(@${who.split`@`[0]})
-${about ? '> 🔖About: ' + about : ''}
-> 🌹 *Status* : ${pasangan ? jodoh : 'Jomblo' }
-> 📞 *Number* : ${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}
-> 🔗 *Link* : https://wa.me/${who.split`@`[0]}
-> ${registered ? '🔞 *Age* : ' + age : ''}
-> 🔺 *XP* : TOTAL ${exp} (${exp - min} / ${xp}) [${math <= 0 ? `Ready to *${usedPrefix}levelup*` : `${math} XP left to levelup`}]
-> 🆙 *Level* : ${level}
-> 🏅 *Role* : *${role}*
-> 📊 *Limit* : ${limit}
-> 💵 *Money* : ${money}
-> ®️ *Registered* : ${registered ? 'Yes (' + new Date(regTime) + ')': 'No'}
-> 👑 *Premium* : ${premium ? 'Yes' : 'No'}
-> 📅 *Kadaluarsa Premium* : ${(premiumDate - now) > 1 ? msToDate(premiumDate - now) : '*Tidak diatur expired premium!*'}
-${lastclaim > 0 ? ' 🧾 > Last Claim: ' + new Date(lastclaim) : ''}
-`.trim()
+// Module
+// Code by Feri
+let PhoneNumber = require('awesome-phonenumber');
+let levelling = require('../lib/levelling');
+const { createHash } = require('crypto');
+const axios = require ("axios");
+const fetch = require("node-fetch");
+// Mulai
+let handler = async(m, { conn, text, usedPrefix, command, isPrems }) => {
+	// User nya
+	let who = m.sender
+	// Data dari Database
+	let { name, age, email, limit, money, premiumDate, premium, regTime, level, role, registered } = global.db.data.users[who]
+	// Untuk Photo Profile
+	let pp = await conn.profilePictureUrl(who, 'image').catch((_) => "https://telegra.ph/file/24fa902ead26340f3df2c.png");
+	// Untuk Serial Number nya
+	let sn = createHash('md5').update(m.sender).digest('hex');
+	// Tanggal Terdaftar
+	let datee = new Date(regTime);
+	let regiss = datee.toISOString().slice(0,19).replace('T',' ');
+	// Captione
+	let nama = name.toUpperCase();
+	let cp =`*✧────···[ ᴘʀᴏꜰɪʟ ᴋᴀᴍᴜ ]···────✧*
+\t						*${nama}*
+					${isPrems ? 'ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀ👑' : 'ꜰʀᴇᴇ ᴜꜱᴇʀ😜'}\n
+├────···[ *ɪɴꜰᴏʀᴍᴀꜱɪ ᴘʀɪʙᴀᴅɪ* ]···────✧
+│⬡ *ɴᴀᴍᴀ : ${registered ? name : ''}*
+│⬡ *ᴜᴍᴜʀ : ${age} ᴛᴀʜᴜɴ*
+│⬡ *ʀᴏʟᴇ : ${role}*
+│⬡ *ʟᴇᴠᴇʟ : ${level}*
+│⬡ *ᴇᴍᴀɪʟ : ʜɪᴅᴅᴇɴ*
+│⬡ *ɴᴏᴍᴏʀ* : ${who.replace('@s.whatsapp.net', '')}
+│⬡ *ꜱᴇʀɪᴀʟ* :
+│⬡ *${sn}*
+│⬡ *ʟɪᴍɪᴛ* : ${isPrems ? 'ᴜɴʟɪᴍɪᴛᴇᴅ' : limit}
+│⬡ *ᴍᴏɴᴇʏ* : Rp. ${money}
+│⬡ *ᴛᴇʀᴅᴀꜰᴛᴀʀ* : 
+│⬡ ${registered ? `*ʏᴀ, ᴘᴀᴅᴀ : ${regiss}*` : 'No'}
+│⬡ *ᴘʀᴇᴍɪᴜᴍ* : ${isPrems ? '*ᴛᴇɴᴛᴜ*' : 'ᴛɪᴅᴀᴋ'}
+│⬡ *ᴇxᴘɪʀᴇᴅ* : ${isPrems ? msToDate(premiumDate - new Date() * 1) : 'ᴛɪᴅᴀᴋ ᴘʀᴇᴍɪᴜᴍ'}
+╰━━━━━━━━━━━━━━━━┈─◂`.trim()
      let mentionedJid = [who]
- 	conn.sendFile(m.chat, pp, 'pp.jpg', str, m, false, { contextInfo: { mentionedJid: conn.parseMention(str) }})
+ 	conn.sendFile(m.chat, pp, 'pp.jpg', cp, m, false, { contextInfo: { mentionedJid: conn.parseMention(cp) }})
  }
-}
-handler.help = ['profile [@user]']
+handler.help = ['profil','profile']
 handler.tags = ['info']
 handler.command = /^profile|profil$/i
 handler.limit = false
@@ -81,26 +59,6 @@ function msToDate(ms) {
 		minutes = Math.floor((hoursms)/(60*1000));
 		minutesms = ms % (60*1000);
 		sec = Math.floor((minutesms)/(1000));
-		return days+" Hari "+hours+" Jam "+ minutes + " Menit";
+		return days+" ʜᴀʀɪ "+hours+" ᴊᴀᴍ "+ minutes + " ᴍᴇɴɪᴛ";
 		// +minutes+":"+sec;
   }
-  
-  const getBuffer = async (url, options) => {
-	try {
-		options ? options : {}
-		const res = await axios({
-			method: "get",
-			url,
-			headers: {
-				'DNT': 1,
-                    'User-Agent': 'GoogleBot',
-				'Upgrade-Insecure-Request': 1
-			},
-			...options,
-			responseType: 'arraybuffer'
-		})
-		return res.data
-	} catch (e) {
-		console.log(`Error : ${e}`)
-	}
-}

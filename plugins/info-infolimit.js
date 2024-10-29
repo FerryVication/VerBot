@@ -13,14 +13,22 @@ let handler = async (m, { conn, text, args, usedPrefix, command, isPrems }) => {
  │
  │	ꜱɪꜱᴀ ʟɪᴍɪᴛ ᴋᴀᴍᴜ : *${isPrems ? 'ᴜɴʟɪᴍɪᴛᴇᴅ' : limit}*
  │
- ├────···[ *ɪɴꜰᴏ* ]···────
+ ├────···[ *ɪɴꜰᴏ* ]···────────
  │
  │  ᴛᴇʀᴅᴀᴘᴀᴛ ᴅᴜᴀ ᴄᴀʀᴀ ᴍᴇɴᴅᴀᴘᴀᴛᴋᴀɴ ʟɪᴍɪᴛ : 
  │  ᴍᴇᴍʙᴇʟɪ ᴀᴋꜱᴇꜱ ᴘʀᴇᴍɪᴜᴍ
  │  ɢᴀʙᴜɴɢ ɢʀᴏᴜᴘ ᴋʜᴜꜱᴜꜱ ᴄʟᴀɪᴍʟɪᴍɪᴛ
  │  
+ ├────···[ *ɢᴀʙᴜɴɢ ɢʀᴏᴜᴘ* ]···──
+ │
+ │⬡ ${usedPrefix}gcbot
+ │
+ ├────···[ *ʙᴇʟɪ ʟɪᴍɪᴛ* ]···─────────
+ │
+ │⬡ ${usedPrefix}plans
+ │
  └ `
- let msg = generateWAMessageFromContent(m.chat, {
+ /*let msg = generateWAMessageFromContent(m.chat, {
     viewOnceMessage: {
       message: {
         messageContextInfo: {
@@ -51,7 +59,7 @@ let handler = async (m, { conn, text, args, usedPrefix, command, isPrems }) => {
             buttons: [
               {
                 name: "quick_reply",
-                buttonParamsJson: "{\"display_text\":\"ʙᴇʟɪ ʟɪᴍɪᴛ\",\"id\":\".donasi\"}"
+                buttonParamsJson: "{\"display_text\":\"ʙᴇʟɪ ʟɪᴍɪᴛ\",\"id\":\".plans\"}"
               },
               {
                 name: "quick_reply",
@@ -85,7 +93,8 @@ let handler = async (m, { conn, text, args, usedPrefix, command, isPrems }) => {
 
   await conn.relayMessage(msg.key.remoteJid, msg.message, {
     messageId: msg.key.id
-  });
+  });*/
+  m.reply(caption);
   }
 	
 handler.command = /^infolimit$/i

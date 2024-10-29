@@ -40,9 +40,9 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@adiwajshing/baileys": "npm:@whiskeysockets/baileys",
+        "@adiwajshing/baileys": "npm:@whiskeysockets/baileys@6.7.6",
         "@adiwajshing/keyed-db": "^0.2.4",
-        "@whiskeysockets/baileys": "^6.7.4",
+        "@whiskeysockets/baileys": "^6.7.6",
         "@bochilteam/scraper": "^3.0.0",
         "@vitalets/google-translate-api": "^9.0.0",
         "javascript-obfuscator": "^4.0.2",
@@ -94,7 +94,7 @@
         "util": "^0.12.4",
         "wa-sticker-formatter": "^4.3.2",
         "yargs": "^17.5.1",
-        "ytdl-core": "github:soya-daizu/ytdl-core#sig-patch",
+        "ytdl-core": "npm:@distube/ytdl-core@latest",
         "yt-search": "^2.10.3"
     }
 }

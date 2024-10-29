@@ -1,52 +1,58 @@
 const axios = require('axios');
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
-    let message;
-    let urlApi;
-    let capt;
+    let capt, urlApi;
+    
+    if (!text) {
+        throw `Masukan URL!\n\ncontoh:\n${usedPrefix + command} https://vt.tiktok.com/ZSY8XguF2/`;
+    }
+
+    if (!text.match(/tiktok|douyin/gi)) {
+        throw `URL Tidak Ditemukan!`;
+    }
+
     if (command === 'tiktok' || command === 'tt' || command === 'tiktokdl' || command === 'tiktoknowm') {
         capt = ` *T I K T O K*`;
-        message = `Masukan URL!\n\ncontoh:\n${usedPrefix + command} https://vm.tiktok.com/ZGJAmhSrp/`;    
         urlApi = `https://api.betabotz.eu.org/api/download/tiktok?url=${text}&apikey=${lann}`;
     } else if (command === 'douyin') {
         capt = ` *D O U Y I N*`;
-        message = `Masukkan URL!\n\ncontoh:\n${usedPrefix + command} https://v.douyin.com/ikq8axJ/`;
         urlApi = `https://api.betabotz.eu.org/api/download/douyin?url=${text}&apikey=${lann}`;
     }
 
-    if (!text) {
-        throw message;
-    }
-
     try {
-        m.reply(wait);      
-        const response = await axios.get(urlApi);        
-        const res = response.data.result;      
+        m.reply(wait);  
+        const response = await axios.get(urlApi);
+        const res = response.data.result;
         var { video, title, title_audio, audio } = res;
 
-        capt += `\n\n`;
-        capt += ` *Title* : ${title}\n`;
-        capt += `*Audio Title* : ${title_audio}\n`;
-        capt += `\n`;        
+        capt += `\n\n *Title* : ${title}\n *Audio Title* : ${title_audio}\n`;
 
-        await conn.sendFile(m.chat, video, null, capt, m);
-        conn.sendMessage(m.chat, { audio: { url: audio[0] }, mimetype: 'audio/mpeg' }, { quoted: m });         
+        if (Array.isArray(video)) {
+            for (let v of video) {
+                await conn.sendFile(m.chat, v, null, capt, m);
+            }
+        } else {
+            await conn.sendFile(m.chat, video, null, capt, m);
+        }
+
+        await conn.sendMessage(m.chat, { audio: { url: audio[0] }, mimetype: 'audio/mpeg' }, { quoted: m });
+        
     } catch (e) {
-        console.log(e);
-        throw ` ${eror}`;
+        console.error(e);
+        throw ` Terjadi kesalahan, coba lagi nanti.`;
     }
 };
 
-handler.command = handler.help = ['tiktok', 'tt','tiktokdl','tiktoknowm', 'douyin'];
+handler.command = /^(tiktok|tt|tiktokdl|tiktoknowm|douyin)$/i;
 handler.tags = ['downloader'];
 handler.limit = true;
 handler.group = false;
-handler.register = true;
 handler.premium = false;
 handler.owner = false;
 handler.admin = false;
 handler.botAdmin = false;
 handler.fail = null;
 handler.private = false;
+handler.register = true;
 
 module.exports = handler;

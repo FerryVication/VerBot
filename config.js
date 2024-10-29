@@ -15,7 +15,7 @@ global.author = '© 𝚅𝚎𝚛𝙱𝚘𝚝𝚇'
 global.maxwarn = '2' // Peringatan maksimum
 
 //INI WAJIB DI ISI!//
-global.lann = 'beta-verbotx' 
+global.lann = 'beta-verbotxv2' 
 //Daftar terlebih dahulu https://api.betabotz.eu.org
 
 //INI OPTIONAL BOLEH DI ISI BOLEH JUGA ENGGA//

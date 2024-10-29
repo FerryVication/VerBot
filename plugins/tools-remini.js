@@ -1,33 +1,33 @@
 const fetch = require('node-fetch');
 const uploadImage = require('../lib/uploadImage.js');
 
-async function handler(m, { conn, usedPrefix, command }) {
-  try {
+async function handler(m, { conn, usedPrefix, command, text }) {
+	if(!text) throw `*Masukkan resolusi scale nya!*\n\n\tcontoh : .remini 2\n\nList Scale : \n2 = low\n4 = medium\n6 = high\n8 = extremely\n16 = awesome\n\n*Note:*\nSemakin Tinggi Scale Yang diPilih, Semakin Lama Proses nya!`;
+  try {   
+    m.reply(`Tunggu ya kak! *semakin tinggi scale yang di input semakin lama proses nya.*`);
     const q = m.quoted ? m.quoted : m;
     const mime = (q.msg || q).mimetype || q.mediaType || '';
     if (/^image/.test(mime) && !/webp/.test(mime)) {
       const img = await q.download();
       const out = await uploadImage(img);
-      const api = await fetch(`https://api.betabotz.eu.org/api/tools/remini?url=${out}&apikey=${lann}`);
+      const api = await fetch(`https://api.betabotz.eu.org/api/tools/remini-v4?url=${out}&resolusi=${text}&apikey=${lann}`);
       const image = await api.json();
-      const { url } = image
-      conn.sendMessage(m.chat, { image: url, mimetype: 'documents' }, { quoted: m });
-      //conn.sendFile(m.chat, url, null, wm, m);
+      const { url } = image 
+       conn.sendFile(m.chat, url, null, wm, m);
     } else {
       m.reply(`Kirim gambar dengan caption *${usedPrefix + command}* atau tag gambar yang sudah dikirim.`);
     }
   } catch (e) {
     console.error(e);
-    m.reply(`Identifikasi gagal. Silakan coba lagi.`);
+    m.reply('oopsss... Terjadi kesalahan silahkan coba kembali dengan resolusi yang berbeda!');
   }
 }
 
-handler.help = ['remini'];
+handler.help = ['remini <scale>'];
 handler.tags = ['tools'];
 handler.command = ['remini'];
 handler.premium = false;
-handler.register = true;
 handler.limit = true;
+handler.register = true;
 
 module.exports = handler;
- 

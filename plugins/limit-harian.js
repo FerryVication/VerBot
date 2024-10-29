@@ -1,6 +1,6 @@
 const cooldown = 86400000
 const limit = ["10","10"]
-let handler = async (m,{ conn} ) => {
+let handler = async (m,{ conn, isPrems} ) => {
   let get = global.db.data.users[m.sender]
   let __timers = (new Date - get.lastclaim)
   let _timers = (86400000 - __timers) 
@@ -9,8 +9,8 @@ let handler = async (m,{ conn} ) => {
     if (m.chat == jb1) {
     
   if (new Date - get.lastclaim < cooldown) throw `Kamu Sudah Mengklaim Limit Gratis Untuk Hari Ini\n\Silahkan Tunggu\n\n\t *${timers}* \n\nUntuk Claimlimit Gratis Lagi`
+  if ( isPrems ) throw `Kamu Adalah Pengguna Premium, Tidak Bisa Mengklaim Limit Gratis!`
   if (get.limit > 20 ) throw `*Oopss Jumlah Limit Kamu Sudah Mencapai Batas Yang Ditentukan* \n *Silahkan Upgrade ke Premium Agar Bisa Memiliki Limit Lebih Banyak* `
-  if (get.limit > 500 ) throw `Kamu Adalah User Premium, Tidak Bisa Mengklaim Limit Gratis!`
   let rendem = pickRandom(limit)
   let hasil = rendem
   let ditambah = parseInt(rendem.split(' '))

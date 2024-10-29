@@ -2,20 +2,23 @@ let handler = async (m, { conn, text, args, usedPrefix, command }) => {
 	let img = `https://raw.githubusercontent.com/clicknetcafe/Databasee/main/azamibot/media/picbot/menus/menus_${getRandomThreeDigitNumber()}.jpg` 
 	let teks = `  
  ┌────···[ *ɢᴀᴍᴇ ᴍᴇɴᴜ* ]···────✧
+ │
  │	${usedPrefix}asahotak
  │	${usedPrefix}caklontong
  │	${usedPrefix}tebakaku
  │	${usedPrefix}tebakhewan
+ │	${usedPrefix}tebakkimia
+ │	${usedPrefix}tebakjenaka
+ │	${usedPrefix}tebakanime
+ │	${usedPrefix}tebakgambar
+ │	${usedPrefix}tebakbendera
  │	${usedPrefix}family100
  │	${usedPrefix}bomb
  │	${usedPrefix}iqtest
  │	${usedPrefix}math
  │	${usedPrefix}suitpvp
  │	${usedPrefix}susunkata
- │	${usedPrefix}tebakanime
- │	${usedPrefix}tebakgambar
- │	${usedPrefix}tebakbendera
- │	${usedPrefix}tictactoe [custom room name]
+ │	${usedPrefix}tictactoe 
  │	${usedPrefix}werewolf
  │
  ├────···[ *ʀᴘɢ ᴍᴇɴᴜ* ]···────

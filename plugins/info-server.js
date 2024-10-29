@@ -9,12 +9,20 @@ let handler = async (m, { conn }) => {
       let caption = `乂  *S E R V E R*\n\n`;
       caption += `┌  ◦  OS : ${os.type()} (${os.arch()} / ${os.release()})\n`;
       caption += `│  ◦  Ram : ${formatSize(os.totalmem() - os.freemem())} / ${formatSize(os.totalmem())}\n`;
-      for (let key in json.result) caption += `│  ◦  ${ucword(key)} : ${json.result[key]}\n`;
+      
+      // Menampilkan semua hasil kecuali 'query'
+      for (let key in json.result) {
+        if (key !== 'query') {
+          caption += `│  ◦  ${ucword(key)} : ${json.result[key]}\n`;
+        }
+      }
+
       caption += `│  ◦  Uptime : ${toTime(os.uptime() * 1000)}\n`;
       caption += `└  ◦  Processor : ${os.cpus()[0].model}\n\n`;
+
       conn.relayMessage(m.chat, {
         extendedTextMessage: {
-          text: caption, 
+          text: caption,
           contextInfo: {
             externalAdReply: {
               title: `${toTime(os.uptime() * 1000)}`,
@@ -27,7 +35,7 @@ let handler = async (m, { conn }) => {
           },
           mentions: [m.sender]
         }
-      }, {})
+      }, {});
       deleteMessage();
     })
     .catch(error => {
@@ -36,12 +44,12 @@ let handler = async (m, { conn }) => {
     });
 };
 
-handler.command = handler.help = ['server']
-handler.tags = ['info']
+handler.command = handler.help = ['server'];
+handler.tags = ['info'];
 module.exports = handler;
 
 function deleteMessage() {
-  //chaunima😁   
+  // Fungsi untuk menghapus pesan
 }
 
 function formatSize(bytes) {
@@ -52,9 +60,7 @@ function formatSize(bytes) {
 }
 
 function ucword(str) {
-  return str.replace(/\b\w/g, function(l) {
-    return l.toUpperCase();
-  });
+  return str.replace(/\b\w/g, l => l.toUpperCase());
 }
 
 function toTime(milliseconds) {

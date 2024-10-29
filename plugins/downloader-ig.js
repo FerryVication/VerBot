@@ -12,7 +12,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
             conn.sendFile(m.chat, i._url, null, `*Instagram Downloader*`, m)
         }
     } catch(err) {
-        m.reply(`${eror}`)
+        m.reply('Oooopssss.... Server Sedang Down!')
     }
 }
 
